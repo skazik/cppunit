@@ -175,13 +175,19 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+static bool gbAdd = true;
+static bool gbMul = true;
+static bool gbFai = false;
 
 class TestBasicMath : public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(TestBasicMath);
-    CPPUNIT_TEST(testAddition);
-    CPPUNIT_TEST(testMultiply);
-    CPPUNIT_TEST(testFailure);
+    if (gbAdd)
+        CPPUNIT_TEST(testAddition);
+    if (gbMul)
+        CPPUNIT_TEST(testMultiply);
+    if (gbFai)
+        CPPUNIT_TEST(testFailure);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -230,8 +236,12 @@ void TestBasicMath::tearDown(void)
 
 CPPUNIT_TEST_SUITE_REGISTRATION( TestBasicMath );
 
-int main(int argc, char* argv[])
+int exec_cppunittest(bool add, bool mul, bool fail, int testid)
 {
+    gbAdd = add;
+    gbMul = mul;
+    gbFai = fail;
+
     // informs test-listener about testresults
     CPPUNIT_NS::TestResult testresult;
 
@@ -254,7 +264,7 @@ int main(int argc, char* argv[])
     compileroutputter.write ();
 
     // Output XML for Jenkins CPPunit plugin
-    ofstream xmlFileOut("cppunitResults.xml");
+    ofstream xmlFileOut("cppRes.xml");
     XmlOutputter xmlOut(&collectedresults, xmlFileOut);
     XmlOutputterHook *hook = (XmlOutputterHook*) new MyXmlOutputterHook(progress.getTimes());
     xmlOut.addHook(hook);
@@ -262,8 +272,10 @@ int main(int argc, char* argv[])
 
     if (fork() == 0)
     {
+        char resname[64];
+        sprintf(resname, "junitResult_%d.xml", testid);
         //$ xsltproc -o junitResults.xml cpp2junit.xslt cppunitResults.xml
-        const char *argv[] = {"/usr/bin/xsltproc","-o","junitResults.xml","cpp2junit.xslt","cppunitResults.xml", NULL};
+        const char *argv[] = {"/usr/bin/xsltproc","-o", resname, "cpp2junit.xslt", "cppRes.xml", NULL};
         execvp(argv[0], (char* const*) argv);
         _exit(0);
     }
@@ -271,6 +283,13 @@ int main(int argc, char* argv[])
     // return 0 if tests were successful
     return collectedresults.wasSuccessful() ? 0 : 1;
 
+}
+
+int main(int argc, char* argv[])
+{
+    exec_cppunittest(true, true, true, 1);
+    exec_cppunittest(true, true, false, 2);
+    return 0;
     // suppress
     argc++, argv++;
 }
