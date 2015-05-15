@@ -22,6 +22,7 @@
 #include <cppunit/TestListener.h>
 #include <cppunit/Test.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 
 // comment it out for real testing
 #define TEST_CPPUNIT_DURATION 1
@@ -270,7 +271,8 @@ int exec_cppunittest(bool add, bool mul, bool fail, int testid)
     xmlOut.addHook(hook);
     xmlOut.write();
 
-    if (fork() == 0)
+    int child_pid = fork();
+    if (0 == child_pid)
     {
         char resname[64];
         sprintf(resname, "junitResult_%d.xml", testid);
@@ -281,14 +283,43 @@ int exec_cppunittest(bool add, bool mul, bool fail, int testid)
     }
 
     // return 0 if tests were successful
-    return collectedresults.wasSuccessful() ? 0 : 1;
+    return child_pid; // collectedresults.wasSuccessful() ? 0 : 1;
 
 }
 
+///////////////////////////////
+/// \brief child_wait
+/// \param child_pid
+///
+void child_wait (int child_pid)
+{   // wait child exit
+    int child_status;
+    pid_t tpid = wait(&child_status);
+    while(tpid != child_pid)
+      tpid = wait(&child_status);
+}
+
+////////////////////////////////
+/// \brief main
+/// \param argc
+/// \param argv
+/// \return
+///
 int main(int argc, char* argv[])
 {
-    exec_cppunittest(true, true, true, 1);
-    exec_cppunittest(true, true, false, 2);
+    typedef struct {
+        bool a, b, c;
+    } testset;
+    testset ts[] = {
+        {true, true, true},
+        {true, true, false},
+        {false, true, true},
+    };
+
+    for (int i = 0; i < (int) (sizeof(ts)/sizeof(testset)); i++)
+    {
+        child_wait(exec_cppunittest(ts[i].a, ts[i].b, ts[i].c, i+1));
+    }
     return 0;
     // suppress
     argc++, argv++;
