@@ -3,7 +3,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    cppunit.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -17,3 +18,7 @@ OTHER_FILES += \
 
 LIBS += -lcppunit
 #LIBS += /usr/lib/x86_64-linux-gnu/libcppunit.a
+SOURCES -= cppunit.cpp
+
+HEADERS += \
+    cppunit.h
