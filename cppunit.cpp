@@ -47,13 +47,13 @@ static char gsTestResultNamePrefix[32] = "";
 
 // static definitions and CPPUNIT re-definitions for SOIT FrameWork
 static char gsActualTestName[0xff];
-#define ISOCK_CPPUNIT_ASSERT_EQUAL_MESSAGE(sourceline, message, expected, actual)     \
+#define SAMPLE_CPPUNIT_ASSERT_EQUAL_MESSAGE(sourceline, message, expected, actual)     \
   ( CPPUNIT_NS::assertEquals( (expected),   \
                               (actual),     \
                               (sourceline), \
                               (message) ) )
 
-#define CASE_ISOCK_CPPUNIT_TEST(__test_id_name , testMethod )               \
+#define CASE_SAMPLE_CPPUNIT_TEST(__test_id_name , testMethod )               \
     case __test_id_name: {                                 \
     sprintf(gsActualTestName, "%s_" #__test_id_name, gsTestResultNamePrefix); \
     CPPUNIT_TEST_SUITE_ADD_TEST(                           \
@@ -62,7 +62,7 @@ static char gsActualTestName[0xff];
                   &TestFixtureType::testMethod,           \
                   context.makeFixture() ) ) ) ; } break;
 
-#define CASE_ISOCK_CPPUNIT_TEST_IDX(__test_id_name , testMethod , __idx)               \
+#define CASE_SAMPLE_CPPUNIT_TEST_IDX(__test_id_name , testMethod , __idx)               \
     case __test_id_name: {                                 \
     sprintf(gsActualTestName, "%s_" #__test_id_name "%d", gsTestResultNamePrefix, __idx); \
     CPPUNIT_TEST_SUITE_ADD_TEST(                           \
@@ -240,10 +240,10 @@ class CppUnitSoitFW : public CppUnit::TestFixture
         switch (gsTestList[idx].test_index)
         {
         // Soit unitest section
-        CASE_ISOCK_CPPUNIT_TEST(eScriptValidation, CompareIntValues);
-        CASE_ISOCK_CPPUNIT_TEST(eFinalReturnValue, CompareIntValues);
-        CASE_ISOCK_CPPUNIT_TEST(eExecute, CompareIntValues);
-        CASE_ISOCK_CPPUNIT_TEST_IDX(eParseResult, CompareListOfIntValues, idx);
+        CASE_SAMPLE_CPPUNIT_TEST(eScriptValidation, CompareIntValues);
+        CASE_SAMPLE_CPPUNIT_TEST(eFinalReturnValue, CompareIntValues);
+        CASE_SAMPLE_CPPUNIT_TEST(eExecute, CompareIntValues);
+        CASE_SAMPLE_CPPUNIT_TEST_IDX(eParseResult, CompareListOfIntValues, idx);
 
         // self test section
         case 251: CPPUNIT_TEST(selfTestAdd); break;
@@ -314,7 +314,7 @@ void CppUnitSoitFW::selfTestFailure(void)
 
 void CppUnitSoitFW::CompareIntValues(void)
 {
-    ISOCK_CPPUNIT_ASSERT_EQUAL_MESSAGE(CPPUNIT_NS::SourceLine( CppUnitSoitFW::mSourceFile, CppUnitSoitFW::mSourceLine ),
+    SAMPLE_CPPUNIT_ASSERT_EQUAL_MESSAGE(CPPUNIT_NS::SourceLine( CppUnitSoitFW::mSourceFile, CppUnitSoitFW::mSourceLine ),
                                        CppUnitSoitFW::mMessage,  CppUnitSoitFW::mValue1[0], CppUnitSoitFW::mValue2[0]);
 }
 
@@ -323,7 +323,7 @@ void CppUnitSoitFW::CompareListOfIntValues(void)
     if (CppUnitSoitFW::mValIdx < CppUnitSoitFW::mValCount)
     {
         int idx = CppUnitSoitFW::mValIdx++;
-        ISOCK_CPPUNIT_ASSERT_EQUAL_MESSAGE(CPPUNIT_NS::SourceLine( CppUnitSoitFW::mSourceFile, CppUnitSoitFW::mSourceLine ), CppUnitSoitFW::mMessage,
+        SAMPLE_CPPUNIT_ASSERT_EQUAL_MESSAGE(CPPUNIT_NS::SourceLine( CppUnitSoitFW::mSourceFile, CppUnitSoitFW::mSourceLine ), CppUnitSoitFW::mMessage,
                                            CppUnitSoitFW::mValue1[idx], CppUnitSoitFW::mValue2[idx]);
     }
 }

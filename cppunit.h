@@ -1,5 +1,5 @@
-#ifndef ISOCK_CPPUNIT_H
-#define ISOCK_CPPUNIT_H
+#ifndef SAMPLE_CPPUNIT_H
+#define SAMPLE_CPPUNIT_H
 
 #define CPPUNIT_TEST_COUNT_MAX       0xFF
 #define CPPUNIT_TEST_RESULTS_MAX     100
@@ -30,4 +30,4 @@ extern void cppunit_compare_listvals(const char *file, int line, int count, unsi
 #define CPPUNIT_COMPARE_VALS_MESSAGE(__exp, __rv, __testid, __msg) cppunit_compare_values(__FILE__, __LINE__, __exp, __rv, __testid, UTILS_current_timestamp(), __msg)
 #define CPPUNIT_COMPARE_VALS_LIST(__cnt, __vals, __testid) cppunit_compare_listvals(__FILE__, __LINE__, __cnt, __vals, __testid)
 
-#endif // ISOCK_CPPUNIT_H
+#endif // SAMPLE_CPPUNIT_H
